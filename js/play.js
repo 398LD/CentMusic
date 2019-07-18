@@ -465,7 +465,7 @@ $(function() {
 				var MID = musics[index].id;
 				var userName = JSON.parse(window.localStorage
 					.getItem("userInfo")).userName;
-				$.get("addLove", {
+				$.get(serverLocation+"/kexunMusic/addLove", {
 					"uName": userName,
 					"mID": MID
 				}, function(data) {
