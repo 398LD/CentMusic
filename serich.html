@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>科讯Music-搜索</title>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="css/dialog.css" />
+		<script type="text/javascript" src="js/Zepto.js"></script>
+		<script type="text/javascript" src="js/dialog.min.js"></script>
+		<script src="js/index.js"></script>
+		<style>
+			.serich {
+				height: 248px;
+				width: 100%;
+				background-repeat: no-repeat;
+				background-image: url(img/bg_search.jpg);
+				padding-top: 100px;
+			}
+			
+			.serich-in {
+				height: 50px;
+				width: 600px;
+				background-color: white;
+				margin: auto;
+				border-radius: 3px;
+			}
+			
+			.serich-in input {
+				height: 100%;
+				width: 530px;
+				float: left;
+				margin-left: 20px;
+			}
+			
+			.serich-in>span {
+				float: right;
+				width: 50px;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+			}
+			
+			.musicswai {
+				width: 1000px;
+				margin: auto;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<!--导航条-->
+		<div class="nav">
+			<div class="nav-inner">
+				<div class="nav-logo" onclick="window.location.href='index.html'">
+					科讯Music
+				</div>
+				<div class="nav-title myactive" onclick="window.location.href='index.html'">
+					音乐馆
+				</div>
+				<div class="nav-title" onclick="window.location.href='my.html'">
+					我的音乐
+				</div>
+
+				<div class="nav-serich">
+					<!--<div class="nav-serich-group">
+						<input type="text" placeholder="输入歌曲名称" list="serich" id="serich" />
+						<span onclick="serich()">搜索</span>
+					</div>-->
+					<div class="nav-user" id="login">
+
+						<div class="nav-btn" style="background-color: #31c27c;" onclick="window.location.href='login.html'">登录</div>
+						<div class="nav-btn" style="background-color: #31B0D5;" onclick="window.location.href='reg.html'">注册</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--导航条结束-->
+		<div class="serich">
+			<div class="serich-in">
+				<input type="text" placeholder="输入歌曲名称" id="serich" />
+				<span class="glyphicon glyphicon-search" onclick="serich()"></span>
+			</div>
+		</div>
+		<div class="musicswai">
+			<table class="table table-striped table-hover">
+				<tr>
+					<td><span class="glyphicon glyphicon-th-list"></span></td>
+					<td>歌曲</td>
+					<td>歌手</td>
+					<td>专辑</td>
+					<td>时长</td>
+				</tr>
+				<tbody id="serichlist">
+
+				</tbody>
+			</table>
+
+		</div>
+
+	</body>
+	<script type="text/javascript" src="js/config.js" ></script>
+	<script>
+		$(function() {
+			var serich = GetUrlParam("q");
+			$.get(serverLocation+"/kexunMusic/serichMusics", {
+				"serich": serich
+			}, function(data) {
+				$("#serichlist").text("");
+				if(data.length > 0) {
+					$.each(data, function(index, item) {
+						$("#serichlist").append('<tr  onclick="play(' + item.mid + ')">' +
+							'<td>' + (index + 1) + '</td>' +
+							'<td>' + item.mName + '</td>' +
+							'<td>' + item.mGs + '</td>' +
+							'<td>' + item.zName + '</td>' +
+							'<td>' + item.mTime + '</td>' +
+							'</tr>');
+					});
+
+				} else {
+					$(".musicswai").append('<h3>未找到相关歌曲,歌手或专辑 <a href="index.html" style="color: #31C27C; text-decoration: underline;">去首页看看</a></h3>')
+				}
+
+			});
+
+		})
+	</script>
+
+</html>

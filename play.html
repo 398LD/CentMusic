@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>科讯Music-播放器</title>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="css/dialog.css" />
+		<script type="text/javascript" src="js/Zepto.js"></script>
+		<script type="text/javascript" src="js/dialog.min.js"></script>
+		<link rel="stylesheet" href="css/index.css" />
+		<style>
+			.m_list {
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<img id="bg" />
+		<!--外层最大div开始-->
+		<div class="main ">
+
+			<!--中间-->
+			<div class="main-middle">
+				<!--歌词开始-->
+				<div class="gc " id="gc">
+					<div class="gc-in">
+						<div class="col-lg-7 col-sm-12   col-md-12  col-xs-12   kfc-list">
+							<ul id="kfc-list-ul">
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<div class="main-content ">
+					<div class="container">
+						<!--歌曲详情级图片-->
+						<div class="col-lg-6 hidden-xs hidden-sm">
+							<div class="yuan">
+								<div class="music-img">
+									<img id="music-img" src="img/2.jpg" style="height: 400px; width:400px" />
+									<h2 id="music-title"></h2>
+									<h4 id="music-gs" ></h4>
+									<h4 id="music-zj"></h4>
+								</div>
+							</div>
+
+						</div>
+						<!--logo 和列表-->
+						<div class="col-lg-6 fixed-right">
+							<p style="font-size: 30px; cursor: pointer; " onclick="window.open('index.html','index')">
+								科讯Music
+							</p>
+							<p class="music-list-title">
+								<button class="btn btn-default" onclick="clearList()">清空列表</button>
+							</p>
+							<div style="height: 400px; width: 100%; overflow-y: scroll">
+								<table class="table table-hover">
+									<tbody id="music-list">
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--中间内容结束-->
+
+			</div>
+			<!--底部播放器开始-->
+			<div class="main-button row">
+
+				<div class="music-control col-xs-3 col-lg-3">
+					<div style="padding-left: 0px;" class="col-lg-3 ">
+						<img src="img/t018168f8b9452114af.jpg" class="img-music " onclick="show()" />
+					</div>
+					<div class="col-lg-9 col-xs-12 ">
+						<span class="glyphicon glyphicon-step-backward" id="last"></span>
+						<span class="glyphicon glyphicon-play" id="play"></span>
+						<span class="glyphicon glyphicon-step-forward" id="next"></span>
+					</div>
+				</div>
+
+				<div class="bottom-center col-lg-7 col-md-8 col-sm-8 col-xs-8">
+					<div style="height: 50px; line-height: 50px; font-size: 18px;"><span id="music-name"></span><span id="nowlrc" class="hidden-xs" style="margin-left: 20px; font-size: 12px;"></span><span style="float: right;" id="time"></span></div>
+					<div class="jdt">
+						<div class="wc">
+							<!--外层滚动条-->
+							<div id="progress" style="height: 5px; background-color: #adadad; margin-top:4px ;">
+								<!--当前进度-->
+								<div class="jd" style="width: 0%;" id="jd">
+									<div class="in-yuan" id="yuan" draggable="true"></div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="bottom-right col-lg-2  hidden-md hidden-sm hidden-xs">
+					<span class="glyphicon glyphicon-heart" style="cursor: pointer;" id="love"></span>
+					<span style="font-size:14px;cursor: pointer; " id="type">顺序播放</span>
+					<span class="glyphicon glyphicon-volume-up" id="vico"></span>
+					<div class="volume">
+						<div style="height: 5px; width: 100%;  margin-top: 2px; background-color: gray;">
+							<div id="volume-in" style="height: 100%; width: 50%; background-color: #adadad;">
+								<div style="height: 10px; width: 10px; border-radius: 10px; background-color: #00FF88; border: 2px solid grey; float: right; position: relative; top: -3px; left: 3px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!--底部播放器结束-->
+
+		</div>
+		<!--外层最大div结束-->
+		<audio src="music/邱永传 - 十一年.mp3" id="au"></audio>
+	</body>
+	<script type="text/javascript" src="js/config.js" ></script>
+	<script src="js/play.js"></script>
+	<script>
+		//是否已经打开歌词窗口标记
+		var flag = true;
+
+		function show() {
+			$("#gc").removeClass("gc3");
+
+			if(flag) {
+				$("#gc").addClass("gc2");
+			} else {
+				$("#gc").addClass("gc3");
+			}
+
+			flag = !flag;
+
+		}
+
+		function clearList() {
+			window.localStorage.removeItem("musicList");
+			window.location.reload();
+
+		}
+	</script>
+
+</html>

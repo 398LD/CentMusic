@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>科讯Muisc-歌单</title>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="css/dialog.css" />
+		<script type="text/javascript" src="js/Zepto.js"></script>
+		<script type="text/javascript" src="js/dialog.min.js"></script>
+		<script src="js/index.js"></script>
+		<style>
+			body {
+				background-color: white;
+			}
+			
+			.gd {
+				/*height: 800px;*/
+				width: 100%;
+				height: 1000px;
+			}
+			
+			.gd-in {
+				width: 1000px;
+				height: 400px;
+				margin: auto;
+				/*background-color: #122B40;*/
+			}
+			
+			.gd-in-image {
+				float: left;
+				padding: 30px;
+				width: 300px;
+				height: 300px;
+			}
+			
+			.gd-in-image img {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.gd-in-jj {
+				float: left;
+				padding: 30px;
+				color: black;
+			}
+			
+			.intro {
+				text-indent: 2em;
+				height: 220px;
+				line-height: 25px;
+				width: 500px;
+				/*background-color: #222222;*/
+				font-size: 16px;
+			}
+			
+			.gdlistwai {
+				height: 500px;
+				width: 100%;
+				/*background-color: #00FF88;*/
+				clear: left;
+			}
+		</style>
+		<script type="text/javascript" src="js/config.js" ></script>
+		<script>
+			$(function() {
+				if(window.localStorage.getItem("userInfo") != null) {
+
+					$("#login").html('<span style="position: relative; bottom: 10px; right: 10px;" class="text-center">你好,' + JSON.parse(window.localStorage.getItem("userInfo")).userName + '</span>' +
+						'<div class="nav-btn" style="background-color: #D9534F;" onclick="exit()">退出</div>')
+				}
+
+				var gdID = GetUrlParam("id");
+				$.get(serverLocation+"/kexunMusic/queryGdByID", {
+					"id": gdID
+				}, function(data) {
+
+					$("#title").text(data.gdName);
+					$("#gdImg").attr("src", serverLocation+"/kexunMusicFile/ImageFile/" + data.gdImg);
+					$("#gdIntro").text(data.gdIntro);
+				});
+
+				//查询歌单下所有歌曲
+				$.get(serverLocation+"/kexunMusic/queryGdList", {
+					"gdID": gdID
+				}, function(data) {
+					$.each(data, function(index, item) {
+						$("#gdlist").append('<tr onclick="play(' + item.mID + ')">' +
+							'<td>' + (index + 1) + '</td>' +
+							'<td>' + item.mName + '</td>' +
+							'<td>' + item.mGs + '</td>' +
+							'<td>' + item.zName + '</td>' +
+							'<td>' + item.mTime + '</td>' +
+							'</tr>');
+					});
+				});
+
+			});
+		</script>
+	</head>
+
+	<body>
+		<!--导航条-->
+		<div class="nav">
+			<div class="nav-inner">
+				<div class="nav-logo" onclick="window.location.href='index.html'">
+					科讯Music
+				</div>
+				<div class="nav-title myactive" onclick="window.location.href='index.html'">
+					音乐馆
+				</div>
+				<div class="nav-title" onclick="window.location.href='my.html'">
+					我的音乐
+				</div>
+
+				<div class="nav-serich">
+					<div class="nav-serich-group">
+						<input type="text" placeholder="输入歌曲名称" list="serich" id="serich" />
+						<span onclick="serich()">搜索</span>
+					</div>
+					<div class="nav-user" id="login">
+
+						<div class="nav-btn" style="background-color: #31c27c;" onclick="window.location.href='login.html'">登录</div>
+						<div class="nav-btn" style="background-color: #31B0D5;" onclick="window.location.href='reg.html'">注册</div>
+
+					</div>
+				</div>
+				<datalist id="serich">
+							<option label="音乐" value="音乐"/><option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+				</datalist>
+			</div>
+		</div>
+		<!--导航条结束-->
+		<div class="gd">
+			<div class="gd-in">
+				<div class="gd-in-image">
+					<img id="gdImg" src="" />
+				</div>
+				<div class="gd-in-jj">
+					<h1 id="title">标题标题</h1>
+					<div class="intro" id="gdIntro">
+					</div>
+				</div>
+				<div class="gdlistwai">
+					<table class="table table-striped table-hover">
+						<tr>
+							<th><span class="glyphicon glyphicon-th-list"></span></th>
+							<th>歌曲</th>
+							<th>歌手</th>
+							<th>专辑</th>
+							<th>时长</th>
+						</tr>
+						<tbody id="gdlist">
+
+						</tbody>
+
+					</table>
+				</div>
+
+			</div>
+
+		</div>
+		<div class="bq">
+			&copy;版权归科讯科技有限公司所有
+		</div>
+	</body>
+
+</html>

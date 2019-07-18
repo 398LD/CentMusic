@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>科讯Music</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<script type="text/javascript" src="js/index.js"></script>
+		<style>
+			.vid {
+				height: 670px;
+				width: 100%;
+				border: #00FF88;
+			}
+			
+			.main {
+				/*height: 600px;*/
+				background-color: #C0C0C0;
+				width: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--导航条-->
+		<div class="nav">
+			<div class="nav-inner">
+				<div class="nav-logo" onclick="window.location.href='index.html'">
+					科讯Music</div>
+				<div class="nav-title myactive" onclick="window.location.href='index.html'">音乐馆</div>
+				<div class="nav-title" onclick="window.location.href='my.html'">
+					我的音乐</div>
+
+				<div class="nav-serich">
+					<!--<div class="nav-serich-group">
+						<input type="text" placeholder="输入歌曲名称" list="serich" />
+						<span>搜索</span>
+					</div>-->
+					<div class="nav-user">
+						<!--<div class="nav-btn" style="background-color: #31c27c;" data-toggle="modal" data-target="#myModal">登录</div>-->
+						<div class="nav-btn" style="background-color: #31B0D5;">注册</div>
+					</div>
+				</div>
+				<datalist id="serich">
+				<option label="音乐" value="音乐" />
+				<option label="音乐" value="音乐" />
+				<option label="音乐" value="音乐" />
+				<option label="音乐" value="音乐" />
+			</datalist>
+			</div>
+		</div>
+		<!--导航条结束-->
+
+		<!--登录面板-->
+		<div class="main">
+
+			<div style="height: 670px; width: 100%; background-color: #262626;">
+				<div class="container">
+					<video id="vd" autoplay="autoplay" src="mv1.mp4" controls="controls" class="vid" loop="loop"></video>
+				</div>
+
+			</div>
+			<div style="width: 100%; height: 100px; background-color: #262626; color: #F9F9F9;">
+				<div class="container">
+					<h1 style="padding-left: 50px;" id="mvName">
+					名字<span class="small" style="padding-left: 10px;">播放量:9000</span>
+				</h1>
+				</div>
+			</div>
+			<div style="width: 100%;">
+				<div class="container">
+					<h3>视频简介</h3>
+					<div style="width: 800px; font-size: 16px; margin-bottom: 100px;" id="jj"></div>
+
+				</div>
+
+			</div>
+			<div class="bq">&copy;版权归科讯科技有限公司所有</div>
+		</div>
+
+	</body>
+	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="js/config.js" ></script>
+	<script>
+		//	vd.width="100%";
+		$(function() {
+
+			var mvID = GetUrlParam("id");
+			//根据m
+			$.get(serverLocation+"/kexunMusic/queryMVByID", {
+				"id": mvID
+			}, function(data) {
+
+				vd.src = serverLocation+"/kexunMusicFile/VideoFile/" + data.mvVideo;
+				$("#jj").html(data.mvIntro);
+				$("#mvName").text(data.mvName);
+				$("title").text("正在播放视频-" + data.mvName)
+			});
+
+		});
+	</script>
+
+</html>

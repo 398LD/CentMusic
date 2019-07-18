@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>科讯Music-我的音乐</title>
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/dialog.css" />
+		<script type="text/javascript" src="js/Zepto.js"></script>
+		<script type="text/javascript" src="js/dialog.min.js"></script>
+		<style>
+			.love-title {
+				height: 30px;
+				width: 100%;
+				border-bottom: 2px solid #31C27C;
+				margin-bottom: 10px;
+				color: #31C27C;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--导航条-->
+		<div class="nav">
+			<div class="nav-inner">
+				<div class="nav-logo" onclick="window.location.href='index.html'">
+					科讯Music
+				</div>
+				<div class="nav-title " onclick="window.location.href='index.html'">
+					音乐馆
+				</div>
+				<div class="nav-title myactive" onclick="window.location.href='my.html'">
+					我的音乐
+				</div>
+
+				<div class="nav-serich">
+					<div class="nav-serich-group">
+						<input type="text" placeholder="输入歌曲名称" list="serich" id="serich" />
+						<span onclick="serich()">搜索</span>
+					</div>
+					<div class="nav-user" id="login">
+
+						<div class="nav-btn" style="background-color: #31c27c;" onclick="window.location.href='login.html'">登录</div>
+						<div class="nav-btn" style="background-color: #31B0D5;" onclick="window.location.href='reg.html'">注册</div>
+
+					</div>
+				</div>
+				<datalist id="serich">
+							<option label="音乐" value="音乐"/><option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+				</datalist>
+			</div>
+		</div>
+		<!--导航条结束-->
+
+		<div class="container">
+			<div class="jumbotron">
+				<h1>
+				你好,<small id="uName" >lidong</small>
+			</h1>
+				<p>欢迎使用科讯Music</p>
+				<p>
+					<a class="btn btn-success btn-lg" href="#" role="button">去逛逛...</a>
+				</p>
+			</div>
+			<div class="love-title">
+				<span class="glyphicon glyphicon-user"></span> 我的喜欢
+			</div>
+			<div style="height: 500px; overflow: auto;" id="wai">
+				<table class="table table-hover table-striped text-center" id="loveList">
+					<thead>
+						<tr>
+							<td><span class="glyphicon glyphicon-sort-by-order"></span></td>
+							<td>歌名</td>
+							<td>作者</td>
+							<td>专辑</td>
+							<td>操作</td>
+						</tr>
+					</thead>
+
+				</table>
+
+			</div>
+
+		</div>
+
+		<br />
+
+		<div class="bq">&copy;版权归科讯科技有限公司所有</div>
+
+	</body>
+	<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/config.js" ></script>
+	<script>
+		$(function() {
+			//判断用户是否登录
+			var userInfo = window.localStorage.getItem("userInfo");
+			if(userInfo == null) {
+				window.location.href = "login.html";
+			} else {
+				$("#uName").text(JSON.parse(window.localStorage.getItem("userInfo")).userName)
+				$("#login").html('<span style="position: relative; bottom: 10px; right: 10px;" class="text-center">你好,' + JSON.parse(window.localStorage.getItem("userInfo")).userName + '</span>' +
+					'<div class="nav-btn" style="background-color: #D9534F;" onclick="exit()">退出</div>');
+			}
+
+			var uName = JSON.parse(userInfo).userName;
+			$
+				.get(serverLocation+"/kexunMusic/queryUserLove", {
+						"uName": uName
+					},
+					function(data) {
+						$("#loveList").append("<tbody>");
+						if(data.length <= 0) {
+							$("#wai").append('<p class="text-center">' +
+								'<a class="btn btn-primary btn-lg" href="index.html" role="button">你的列表是空,去逛逛...</a>' +
+								'</p>')
+
+						} else {
+							$.each(
+								data,
+								function(index, love) {
+									if(love.music == null) {
+
+										$("#loveList")
+											.append(
+												'<tr>' +
+												'<td>' +
+												(index + 1) +
+												'</td>' +
+												'<td>已下架</td>' +
+												'<td>已下架</td>' +
+												'<td>已下架</td>' +
+												'<td><span onclick="del(' + love.lID + ')"  class="glyphicon glyphicon-trash"></span></td>' +
+												'</tr>');
+									} else {
+
+										$("#loveList")
+											.append(
+												'<tr > ' +
+												'<td >' +
+												(index + 1) +
+												'</td>' +
+												'<td onclick="play(' + love.mID + ')">' +
+												love.music.mName +
+												'</td>' +
+												'<td>' +
+												love.music.mGs +
+												'</td>' +
+												'<td>' +
+												love.music.zName +
+												'</td>' +
+												'<td><span onclick="del(' + love.lID + ')"  class="glyphicon glyphicon-trash"></span></td>' +
+												'</tr>');
+
+									}
+
+								});
+						}
+						$("#loveList").append("</tbody>");
+
+					});
+
+		});
+
+		function del(id) {
+
+			if(confirm("你确定要从[我的喜欢]移除吗?")) {
+
+				$.get(serverLocation+"/kexunMusic/delUserLove", {
+					"lID": id
+				}, function(data) {
+
+					if(data.message == "ok") {
+						popup({
+							type: 'success',
+							msg: "操作成功",
+							delay: 1000,
+							callBack: function() {
+								location.reload();
+							}
+						});
+					} else {
+						popup({
+							type: 'error',
+							msg: "操作失败",
+							delay: 1500,
+							callBack: function() {
+								location.reload();
+							}
+						});
+
+					}
+
+				})
+
+			}
+
+		}
+	</script>
+
+</html>

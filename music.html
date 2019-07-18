@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="css/dialog.css" />
+		<script type="text/javascript" src="js/Zepto.js"></script>
+		<script type="text/javascript" src="js/dialog.min.js"></script>
+		<script src="js/index.js"></script>
+	</head>
+
+	<body>
+		<!--导航条-->
+		<div class="nav">
+			<div class="nav-inner">
+				<div class="nav-logo" onclick="window.location.href='index.html'">
+					科讯Music
+				</div>
+				<div class="nav-title myactive" onclick="window.location.href='index.html'">
+					音乐馆
+				</div>
+				<div class="nav-title" onclick="window.location.href='my.html'">
+					我的音乐
+				</div>
+
+				<div class="nav-serich">
+					<div class="nav-serich-group">
+						<input type="text" placeholder="输入歌曲名称" list="serich" id="serich" />
+						<span onclick="serich()">搜索</span>
+					</div>
+					<div class="nav-user" id="login">
+
+						<div class="nav-btn" style="background-color: #31c27c;" onclick="window.location.href='login.html'">登录</div>
+						<div class="nav-btn" style="background-color: #31B0D5;" onclick="window.location.href='reg.html'">注册</div>
+
+					</div>
+				</div>
+				<datalist id="serich">
+							<option label="音乐" value="音乐"/><option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+				</datalist>
+			</div>
+		</div>
+		<!--导航条结束-->
+		<!--新歌-->
+		<div class="tuijian" style="background-color: white;">
+			<div class="tuijian-in">
+				<div class="title">
+					新歌首发
+				</div>
+				<div class="new-content" id="new_music_list">
+
+				</div>
+
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/config.js" ></script>
+	<script>
+		if(window.localStorage.getItem("userInfo") != null) {
+
+			$("#login").html('<span style="position: relative; bottom: 10px; right: 10px;" class="text-center">你好,' + JSON.parse(window.localStorage.getItem("userInfo")).userName + '</span>' +
+				'<div class="nav-btn" style="background-color: #D9534F;" onclick="exit()">退出</div>')
+		}
+		//查询音乐列表
+		$.get(serverLocation+"/kexunMusic/getAllMusics", function(data) {
+			$.each(data.musicList, function(index, music) {
+				$("#new_music_list").append('<div class="newmusic" onclick="play(' + music.mid + ')" >' +
+					'<img src="'+serverLocation+'/kexunMusicFile/ImageFile/' + music.mImg + '" />' +
+					'<div class="newmusic-content">' +
+					'<p style="padding-top: 20px;width: 100%; height: 40px; cursor: pointer; overflow: hidden; ">' + music.mName + '</p>' +
+					'<p>' + music.mGs + '</p>' +
+					'</div>' +
+					'<div class="time">' +
+					'<p>' + music.mTime + '</p>' +
+					'</div>' +
+					'</div>')
+			});
+
+		});
+	</script>
+
+</html>

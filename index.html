@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="index" />
+		<title>科讯Music-首页</title>
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<link rel="stylesheet" href="css/style.css" />
+
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="css/dialog.css" />
+		<script type="text/javascript" src="js/Zepto.js"></script>
+		<script type="text/javascript" src="js/dialog.min.js"></script>
+		<script type="text/javascript" src="js/config.js"></script>
+		<script src="js/index.js"></script>
+		<style>
+			.item img {
+				height: 460px !important;
+				width: 100%;
+			}
+			
+			.big {
+				transition-property: height, width, margin-left, margin-top;
+				transition-duration: 300ms;
+				transition-timing-function: ease-in-out;
+				cursor: pointer;
+			}
+			
+			.big:hover {
+				height: 90px;
+				width: 90px;
+				margin-left: -5px;
+				margin-top: -5px;
+			}
+		</style>
+
+		<script>
+			$(function() {
+				//查询用户
+				if(window.localStorage.getItem("userInfo") != null) {
+
+					$("#login").html('<span style="position: relative; bottom: 10px; right: 10px;" class="text-center">你好,' + JSON.parse(window.localStorage.getItem("userInfo")).userName + '</span>' +
+						'<div class="nav-btn" style="background-color: #D9534F;" onclick="exit()">退出</div>')
+				}
+				//查询音乐列表
+				$.get(serverLocation + "/kexunMusic/getAllMusics?page=1", function(data) {
+					$.each(data.musicList, function(index, music) {
+						$("#new_music_list").append('<div class="newmusic" title="' + music.mName + '" onclick="play(' + music.mid + ')" >' +
+							'<img class="big" src="' + serverLocation + '/kexunMusicFile/ImageFile/' + music.mImg + '" />' +
+							'<div class="newmusic-content">' +
+							'<p style="padding-top: 20px;width: 100%; height: 40px; cursor: pointer; overflow: hidden; ">' + music.mName + '</p>' +
+							'<p>' + music.mGs + '</p>' +
+							'</div>' +
+							'<div class="time">' +
+							'<p>' + music.mTime + '</p>' +
+							'</div>' +
+							'</div>')
+					});
+
+				});
+				//查询mv列表
+				$.get(serverLocation + "/kexunMusic/queryAllMv", function(data) {
+					$("#mvList").append('<div class="item active content">');
+					$.each(data.mvList, function(index, item) {
+						if(index < 6) {
+							$("#mvList").append('<div class="mv-video" onclick="goMV(\'' + item.mvID + '\')" >' +
+								'<img src="' + serverLocation + '/kexunMusicFile/ImageFile/' + item.mvImg + '" />' +
+								'<p>' + item.mvName + '</p>' +
+								'<p>' + item.mvIntro + '</p>' +
+								'</div>');
+
+						}
+
+					});
+
+				});
+
+				//查询排行前三
+				$.get(serverLocation + "/kexunMusic/queryTop3Music?size=3", function(data) {
+					$.each(data, function(index, item) {
+						$("#phList").append('<div class="ph-cn-item" onclick="play(' + item.mid + ')">' +
+							'<div class="ph-img">' +
+							'<img src="' + serverLocation + '/kexunMusicFile/ImageFile/' + item.mImg + '" class="img-thumbnail" />' +
+							'</div>' +
+							'<div class="ph-title">' + item.mName + '</div>' +
+							'</div>');
+
+					});
+
+				});
+
+				//查询推荐歌单
+				$.get(serverLocation + "/kexunMusic/queryTop4Gd", function(data) {
+					$.each(data, function(index, item) {
+
+						$("#gedanList").append('<div class="gd-item" onclick="goGdList(' + item.gdID + ')">' +
+							'<img src="' + serverLocation + '/kexunMusicFile/ImageFile/' + item.gdImg + '"  class="img-thumbnail" />' +
+							'<div class="gd-text">' + item.gdName + '</div>' +
+							'</div>');
+					});
+
+				});
+
+				//查询轮播图
+				$.get(serverLocation + "/kexunMusic/queryAllsSlideshow", function(data) {
+					$.each(data.sList, function(index, item) {
+
+						if(index == 0) {
+							$("#lbty").append('<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>')
+							$("#lbt").append('<div class="item active content" onclick="window.open(\'' + item.sAddress + '\')">' +
+								'<img src="' + serverLocation + '/kexunMusicFile/ImageFile/' + item.sImg + '" alt="...">' +
+								'<div class="carousel-caption">' +
+								'</div>' +
+								'</div>');
+
+						} else {
+							$("#lbty").append('<li data-target="#carousel-example-generic" data-slide-to="' + index + '"></li>')
+							$("#lbt").append('<div title="' + item.sName + '" class="item content" onclick="window.open(\'' + item.sAddress + '\')">' +
+								'<img src="' + serverLocation + '/kexunMusicFile/ImageFile/' + item.sImg + '" alt="...">' +
+								'<div class="carousel-caption">' +
+								'</div>' +
+								'</div>');
+						}
+
+					});
+
+				});
+
+			});
+		</script>
+
+	</head>
+
+	<body>
+		<!--导航条-->
+		<div class="nav">
+			<div class="nav-inner">
+				<div class="nav-logo" onclick="window.location.href='index.html'">
+					科讯Music
+				</div>
+				<div class="nav-title myactive" onclick="window.location.href='index.html'">
+					音乐馆
+				</div>
+				<div class="nav-title" onclick="window.location.href='my.html'">
+					我的音乐
+				</div>
+
+				<div class="nav-serich">
+					<div class="nav-serich-group">
+						<input type="text" placeholder="输入歌曲名称" list="serich" id="serich" />
+						<span onclick="serich()">搜索</span>
+					</div>
+					<div class="nav-user" id="login">
+
+						<div class="nav-btn" style="background-color: #31c27c;" onclick="window.location.href='login.html'">登录</div>
+						<div class="nav-btn" style="background-color: #31B0D5;" onclick="window.location.href='reg.html'">注册</div>
+
+					</div>
+				</div>
+				<datalist id="serich">
+							<option label="音乐" value="音乐"/><option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+							<option label="音乐" value="音乐"/>
+				</datalist>
+			</div>
+		</div>
+		<!--导航条结束-->
+		<!--推荐-->
+		<div class="tuijian">
+			<div class="tuijian-in">
+				<a class="carousel-mycontrol " href="#carousel-example-generic" style="left: 0px;" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left left" id="left" aria-hidden="true"></span>
+				</a>
+				<a class="carousel-mycontrol" href="#carousel-example-generic" style="right: 0px;" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right right" id="right" aria-hidden="true"></span>
+				</a>
+				<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+					<!-- Indicators -->
+					<ol class="carousel-indicators" id="lbty">
+
+					</ol>
+
+					<!-- Wrapper for slides -->
+					<div class="carousel-inner" id="lbt">
+
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+		<!--歌单推荐-->
+		<div class="tuijian" style="background-color: whitesmoke;">
+			<div class="tuijian-in">
+				<div class="title">
+					歌单推荐
+				</div>
+				<div style="height: 16px;">
+					<a href="gd.html" style="float: right;">更多</a>
+				</div>
+				<div class="new-content" id="gedanList">
+
+				</div>
+
+			</div>
+		</div>
+
+		<!--新歌-->
+		<div class="tuijian" style="background-color: white;">
+			<div class="tuijian-in">
+				<div class="title">
+					新歌首发
+				</div>
+				<div style="height: 16px;">
+					<a href="music.html" style="float: right;">更多</a>
+				</div>
+				<div class="new-content" id="new_music_list">
+
+				</div>
+
+			</div>
+		</div>
+
+		<!--排行榜-->
+		<div class="paihangbang">
+			<div class="ph-in">
+				<div class="title">排行榜</div>
+				<div class="ph-content" id="phList">
+					<!--排行榜列表-->
+				</div>
+			</div>
+
+		</div>
+		<!--MV-->
+		<div class="mv">
+
+			<div class="mv-in">
+
+				<div class="title">MV</div>
+
+				<div id="carousel-example-generic1" class="carousel slide" data-ride="carousel">
+					<a href="mv.html" style="float: right; cursor: pointer;">更多</a>
+					<div class="carousel-inner" id="mvList">
+
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<!--版权-->
+		<div class="bq">
+			&copy;版权归科讯科技有限公司所有
+		</div>
+		<!-- Modal -->
+
+	</body>
+	<script>
+		//		carousel-mycontrol
+
+		$(".carousel-mycontrol").mouseover(function() {
+
+			$(".carousel-mycontrol #left").addClass("leftend");
+
+			$(".carousel-mycontrol #right").addClass("rightend")
+
+		});
+
+		$(".carousel-mycontrol").mouseout(function() {
+
+			$(".carousel-mycontrol #left").removeClass("leftend")
+
+			$(".carousel-mycontrol #right").removeClass("rightend")
+
+		});
+		/*
+		 *点击播放  弹出播放器窗口  需要将音乐添加到播放列表
+		 * 
+		 * 点击播放 将当前音乐id 将id保存到本地存储  保存成功之后跳转到 播放器界面
+		 *  播放器界面加载的时候从 本地存储取出id 同ajax请求 返回一个音乐数组
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * */
+	</script>
+
+</html>
