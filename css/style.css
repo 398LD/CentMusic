@@ -59,7 +59,7 @@ a {
 }
 
 .nav-serich {
-	width: 680px;
+	width: 570px;
 	height: 100%;
 	float: left;
 	display: inline-block;
@@ -75,7 +75,7 @@ a {
 	border-radius: 5px;
 	overflow: hidden;
 	margin-top: 10px;
-	margin-left: 200px;
+	/*margin-left: 200px;*/
 }
 
 .nav-serich-group input {
